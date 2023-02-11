@@ -2,7 +2,7 @@
 
 Forker dans votre compte github le repo https://github.com/crunchy-devops/tp-coaching-webforce3.git  
 Faire un git clone de ce repo en local dans votre directory c:\projet  
-Faire un git clone dans la home directory de votre VM fournie 
+Faire un git clone dans la home directorie de votre VM fournie 
 Ouvrir la directorie **tp-coaching-webforce3** dans PyCharm.
 
 ## Résultats et attentes
@@ -33,11 +33,10 @@ Faire un ```pip install flask``` , suivre les instructions pour installer pip si
 
 Recherche le disque supplémentaire de 1Gb connecté à la VM, précisez la commande utilisée
 Formattez ce disque au format ext4  
-Créer un <u> lien symbolique </u> nommé **log** depuis le projet tp-coaching-webforce3 sur votre vm 
-vers ce disque
+Monter (mount) ce disque sur le point montage /home/ubuntu/tp-coaching-webforce3/log
 
 
-## Exercice 4   Git/Github 
+## Exercice 4  - Git/Github 
 Dans PyCharm allez dans File->Settings->Version control->github  
 Appuyer sur la croix, en haut a gauche de cette fenetre et selectionnez log in with token.   
 entrez votre token github  
@@ -76,12 +75,13 @@ Ajouter une variable d'environnement ```FLASK_APP=blogs``` , mettre cette variab
 de votre user ubuntu  
 Lancer le web server avec la commande ```flask run --host=0.0.0.0 -p 30101```  
 Vérifier avec votre navigateur en utilisant l'url ```http://<ip_de_votre_vm>:30101/blogs```    
-Verifier que le fichier record.log existe dans la directory log    
+Vérifier que le fichier record.log existe bien dans la directory log    
 
 
-## Exercice 6   Pare-feu  
+## Exercice 6  - Pare-feu  
 Trouvez la commande de gestion du firewall sous ubuntu 20.04
-Fermer le port 5000 et autoriser le port 30101  
+Exemple : fermer le port 5000 et autoriser le port 30101
+Vérifier l'application Web sur ces ports
 
 
 
