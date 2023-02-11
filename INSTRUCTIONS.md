@@ -38,6 +38,11 @@ vers ce disque
 
 
 ## Exercice 4   Git/Github 
+Dans PyCharm allez dans File->Settings->Version control->github  
+Appuyer sur la croix, en haut a gauche de cette fenetre et selectionnez log in with token.   
+entrez votre token github  
+Vous pouvez maintenant faire des git commit et git push depuis PyCharm   
+
 Faire régulierement des commit/push dans github de votre machine local vers github
 Comme vous avez fait un git clone de votre projet sur votre VM, vous devez
 faire des git pull pour mettre jour votre Web serveur sans utiliser d'éditeur 
