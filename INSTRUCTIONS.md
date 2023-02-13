@@ -1,4 +1,4 @@
-# Instructions pour le TP 
+# Instructions pour le TPs 
 
 Forker dans votre compte github le repo https://github.com/crunchy-devops/tp-coaching-webforce3.git  
 Faire un git clone de ce repo en local dans votre directory c:\projet  
@@ -79,14 +79,50 @@ Vérifier que le fichier record.log existe bien dans la directory log
 
 
 ## Exercice 6  - Pare-feu  
-Trouvez la commande de gestion du firewall sous ubuntu 20.04
-Exemple : fermer le port 5000 et autoriser le port 30101
-Vérifier l'application Web sur ces ports
+Trouvez la commande de gestion du firewall sous ubuntu 20.04  
+Exemple : fermer le port 5000 et autoriser le port 30101  
+Vérifier l'application Web sur ces ports  
 
+---
 
+## Ansible 1  Installation avec virtualenv 
+Mettre en place ansible dans votre VM. 
+Nous allons créer un virtualenv python pour installer la derniere version 
+d'Ansible
+```shell
+cd ~/tp-coaching-webforce3
+python3 -m venv venv  # set up the module venv in the directory venv
+source venv/bin/activate  # activate the virtualenv python
+pip3 install wheel  # set for permissions purpose
+pip3 install --upgrade pip # update pip3
+pip3 install ansible # install ansible 
+pip3 install requests # extra packages
+ansible --version # check the version number
+```
+## TP ansible 1 
+Dans une sous directory de votre projet tp-coaching-webforce3 nommée **ansible**   
+Créer un fichier ansible-1.yaml qui automatise l'exercice 2 ci-dessus.  
+1. Le script doit mettre à jour les packages ubuntu.   
+2. Vérifier la version de python3  
+3. Créer un alias dans ~/.bashrc  
+4. installer le package pip
+Testez votre script
 
+## TP ansible 2 
+Dans une sous directory de votre projet tp-coaching-webforce3 nommée **ansible**   
+Créer un fichier ansible-2.yaml qui automatise l'exercice 3 ci-dessus.  
+1. Trouvez le disque de 1G attaché a la VM
+2. Formatter le disque en ext4
+3. mount le disque sur le point de montage 
+Testez votre script
 
-
+## TP ansible 3 
+Dans une sous directory de votre projet tp-coaching-webforce3 nommée **ansible**   
+Créer un fichier ansible-3.yaml qui automatise l'exercice 6 ci-dessus.  
+1. activer le firewall d'ubuntu
+2. fermer le port 5000
+3. ouvrir le port 30101
+Testez votre script
 
 
 
