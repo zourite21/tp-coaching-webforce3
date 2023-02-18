@@ -31,8 +31,8 @@ Faire un ```pip install flask``` , suivre les instructions pour installer pip si
 
 ## Exercice 3  - Storage 
 
-Recherche le disque supplémentaire de 1Gb connecté à la VM, précisez la commande utilisée
-Formattez ce disque au format ext4  
+Recherche le disque supplémentaire de 1Gb connecté à la VM, précisez la commande utilisée  
+Formattez ce disque au format ext4   
 Monter (mount) ce disque sur le point montage /home/ubuntu/tp-coaching-webforce3/log
 
 
@@ -121,7 +121,7 @@ Dans une sous directory de votre projet tp-coaching-webforce3 nommée **ansible*
 Créer un fichier ansible-3.yaml qui automatise l'exercice 6 ci-dessus.  
 1. activer le firewall d'ubuntu
 2. fermer le port 5000
-3. ouvrir le port 30101
+3. ouvrir le port 30101  
 Testez votre script
 
 
