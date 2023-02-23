@@ -1,0 +1,28 @@
+---
+- name: format disk
+  become: true
+  hosts: all
+
+  tasks:
+    - name: Collect only facts about hardware
+      setup:
+        gather_subset:
+          - hardware
+    - name: Output disk
+      debug:
+        var: hostvars[inventory_hostname].ansible_devices.keys() | list
+    - name: parted all available disk
+      parted:
+        device: "/dev/{{ item }}"
+        number: 1
+        state: present
+      with_items:
+        - "{{ hostvars[inventory_hostname].ansible_devices.keys() | list }}"
+      ignore_errors: yes
+    - name: format_disk
+      filesystem:
+        fstype: ext4
+        dev: "/dev/{{ item }}"
+      with_items:
+        - "{{ hostvars[inventory_hostname].ansible_devices.keys() | list }}"
+      ignore_errors: yes

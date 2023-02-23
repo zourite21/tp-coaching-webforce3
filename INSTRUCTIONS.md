@@ -97,6 +97,7 @@ pip3 install wheel  # set for permissions purpose
 pip3 install --upgrade pip # update pip3
 pip3 install ansible # install ansible 
 pip3 install requests # extra packages
+pip3 install natsort # require for an ansible filter
 ansible --version # check the version number
 ```
 ## TP ansible 1 
@@ -110,11 +111,19 @@ Testez votre script
 
 ## TP ansible 2 
 Dans une sous directory de votre projet tp-coaching-webforce3 nommée **ansible**   
-Créer un fichier ansible-2.yaml qui automatise l'exercice 3 ci-dessus.  
-1. Trouvez le disque de 1G attaché a la VM
-2. Formatter le disque en ext4
-3. mount le disque sur le point de montage 
-Testez votre script
+
+Trouvez le fichier ansible-2-filtre.yml qui affiche les devices en mode raw
+1. Analysez le fichier ansible-2-filtre.yml
+2. Dans la directory filter_plugins etudier le code de la fonction get_device
+3. Regardez egalement le fichier ansible.cfg, mettre des commentaires dans le README.md
+Ce filtre doit etre utilise en local, pas sur une machine remote
+
+Une maniere qui cette fois fonctionne en remote est le script ansible-2.yml
+4. Analysez le fichier ansible-2.yml
+5. Executez le
+6. Le script ansible-2-filter.yml ne formatte pas le disk. Modifier le script ansible-2-filter.yaml pour qu'il formatte le disque en
+en vous inspirant du script ansible-2.yml 
+
 
 ## TP ansible 3 
 Dans une sous directory de votre projet tp-coaching-webforce3 nommée **ansible**   
