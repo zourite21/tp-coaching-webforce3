@@ -118,9 +118,9 @@ Trouvez le fichier ansible-2-filtre.yml qui affiche les devices en mode raw
 3. Regardez egalement le fichier ansible.cfg, mettre des commentaires dans le README.md
 Ce filtre doit etre utilise en local, pas sur une machine remote
 
-Une maniere qui cette fois fonctionne en remote est le script ansible-2.yml
-4. Analysez le fichier ansible-2.yml
-5. Executez le
+Une maniere qui cette fois fonctionne en remote est le script ansible-2.yml  
+4. Analysez le fichier ansible-2.yml  
+5. Executez le  
 6. Le script ansible-2-filter.yml ne formatte pas le disk. Modifier le script ansible-2-filter.yaml pour qu'il formatte le disque en
 en vous inspirant du script ansible-2.yml 
 
