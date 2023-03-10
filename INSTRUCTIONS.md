@@ -156,6 +156,143 @@ Creez un fichier nommee variables.yml , Copiez le code suivant:
   when: ansible_distribution == "CentOS"
 ```
 Etudiez ce code, et commentez le dans votre README.md
+Editez le fichier main.yml dans la directory tasks
+Copiez le code suivant:
+```yaml
+- include_tasks: variables.yml
+
+# Setup /install task
+- include_tasks: setup-CentOS.yml
+  when: ansible_distribution == 'CentOS'
+
+- include_tasks: initialize.yml
+
+- name: Ensure Postgresql is started and enable on boot
+  service:
+    name: "{{ postgresql_daemon }}"
+    state: "{{ postgresql_service_state }}"
+    enabled: "{{ postgresql_service_enabled }}"
+
+- import_tasks: users.yml
+```
+dans la directory tasks copiez le code dans setup-CentOS.yml 
+```yaml
+---
+- name: Check if the postgresql packages are installed
+  yum:
+    name: "{{ postgresql_packages }}"
+    state: present
+
+- name: Check if the postgresql librairies are installed
+  yum:
+    name: "{{ postgresql_python_library }}"
+    state: present
+```
+dans la directory tasks copiez le code dans initialize.yml
+```yaml
+---
+- name: Set Postgresql environment variables
+  template:
+    src: postgres.sh.j2
+    dest: /etc/profile.d/postgres.sh
+    mode: 0644
+  notify: restart postgresql
+
+- name: Check if Postgresql directory exists
+  file:
+    path: "{{ postgresql_data_dir }}"
+    owner: "{{ postgresql_user }}"
+    group: "{{ postgresql_group }}"
+    state: directory
+    mode: 0700
+
+- name: Check if Postgresql database is initialized
+  stat:
+    path: "{{ postgresql_data_dir }}/PG_VERSION"
+  register: pgdata_dir_version
+  tags:
+    - db_init
+
+- name: Ensure PostgreSQL database is initialized
+  command: "{{ postgresql_bin_path }}/initdb -D {{ postgresql_data_dir }}"
+  when: not pgdata_dir_version.stat.exists
+  become: true
+  become_user: "{{ postgresql_user }}"
+```
+
+dans la directory tasks copiez le code dans users.yml
+```yaml
+---
+- name: Ensure Postgresql users are present
+  postgresql_user:
+    name: "{{ item.name }}"
+    password: "{{ item.password | default(omit) }}"
+    encrypted: "{{ item.encrypted | default(omit) }}"
+    priv: "{{ item.priv | default(omit) }}"
+    role_attr_flags: "{{ item.role_attr_flags | default(omit) }}"
+    db: "{{ item.db | default(omit) }}"
+    login_host: "{{ item.login_host | default(omit) }}"
+    login_password: "{{ item.login_password | default(omit) }}"
+    login_user: "{{item.login_user | default(omit) }}"
+    port: "{{item.port | default(omit) }}"
+    state: "{{ item.state | default(omit) }}"
+  with_items: "{{ postgresql_users }}"
+  #no_log: "{{ postgresql__users_no_log }}"
+  become: true
+  become_user: "{{ postgresql_user}}"
+```
+
+Le fichier qui mixte le nom de l'OS et la version est CentOS-7.yml
+```yaml
+---
+postgresql_version: "9.2"
+postgresql_data_dir: "/var/lib/pgsql/data"
+postgresql_bin_path: "/usr/bin"
+postgresql_config_path: "/var/lib/pgsql/data"
+postgresql_daemon: postgresql
+postgresql_packages:
+  - postgresql
+  - postgresql-server
+  - postgresql-contrib
+  - postgresql-libs
+postgresql_python_library:
+  - postgresql-plpython
+  - python-psycopg2
+```
+dans le fichier main.yml postgresql.role/handlers
+```yaml
+- name: restart postgresql
+  service:
+    name: "{{ postgresql_daemon}}"
+    state: "{{ postgresql_restarted_state }}"
+    sleep: 5
+```
+Pourquoi vous avez besoin d'un handler?   
+
+dans le fichier main.yml postgresql.role/defaults
+```yaml
+postgresql_enablerepo: ""
+
+postgresql_restarted_state: "restarted"
+
+postgresql_user: postgres
+postgresql_group: postgres
+
+postgresql_service_state: started
+postgresql_service_enabled: true
+
+postgresql_users_no_log: true
+
+postgresql_users: []
+```
+dans le fichier postgres.sh.j2 postgresql.role/templates
+```shell
+export PGDATA={{ postgresql_data_dir }}
+export PATH=$PATH:{{ postgresql_bin_path }}
+```
+
+
+
 
 
 
