@@ -133,5 +133,33 @@ Créer un fichier ansible-3.yaml qui automatise l'exercice 6 ci-dessus.
 3. ouvrir le port 30101  
 Testez votre script
 
+## TP ansible 4 
+Copiez votre cle ssh sur la machine remote.      
+Creer votre fichier inventory pour acceder depuis ansible vers cette machine. 
+Nommez un groupe leader qui contient cette machine. comme par exemple
+```shell
+[leader]
+centos01 ...
+```
+Faire la commande ansible Ad-hoc pour verifier la connectivite.      
+Dans votre home directory creez une directory webforce.   
+Dans cette directory , creer un role postgresql.role   
+Dans la directory webforce , creer un playbook postgres.yml qui utilise le role  
+faire les commandes ansible Ad-hoc pour verifier OS et la version de centos01  
+Dans role postgresql.role  et dans la directory tasks  
+Creez un fichier nommee variables.yml , Copiez le code suivant:  
+```yaml
+---
+# Variables configuration
+- name: Include OS-specific variables (Centos)
+  include_vars: "{{ ansible_distribution }}-{{ ansible_distribution_version.split('.')[0] }}.yml"
+  when: ansible_distribution == "CentOS"
+```
+Etudiez ce code, et commentez le dans votre README.md
+
+
+
+
+
 
 
