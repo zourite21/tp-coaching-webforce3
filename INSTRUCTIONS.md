@@ -86,9 +86,11 @@ Vérifier l'application Web sur ces ports
 ---
 
 # TP Ansible 
+Ecrire vos commandes dans le fichier README.md avec commentaires + explications.   
+Certaines lignes commencant par *- doivent etre traduites par une ou plusiers commandes linux ou ansible.   
 
 ## Installation avec virtualenv 
-Mettre en place ansible dans votre VM. 
+Mettre en place ansible dans votre VM, si ce n'est pas deja fait
 Nous allons créer un virtualenv python pour installer la derniere version 
 d'Ansible
 ```shell
