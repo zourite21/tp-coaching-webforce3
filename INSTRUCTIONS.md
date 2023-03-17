@@ -180,25 +180,23 @@ Copiez le code suivant:
 
 # Setup /install task
 - include_tasks: setup-AlmaLinux.yml
-  when: ansible_distribution == 'Almalinux'
+  when: ansible_distribution == 'AlmaLinux'
 
 - include_tasks: initialize.yml
-
-- name: Ensure Postgresql is started and enable on boot
-  service:
-    name: "{{ postgresql_daemon }}"
-    state: "{{ postgresql_service_state }}"
-    enabled: "{{ postgresql_service_enabled }}"
-
+  
 - import_tasks: users.yml
 ```
 dans la directory tasks copiez le code suivant dans setup-AlmaLinux.yml 
 ```yaml
 ---
+- name: Install RPM repo
+  command: dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-9-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+
 - name: Check if the postgresql packages are installed
   yum:
     name: "{{ postgresql_packages }}"
     state: present
+
 
 ```
 dans la directory tasks copiez le code dans initialize.yml
@@ -209,7 +207,6 @@ dans la directory tasks copiez le code dans initialize.yml
     src: postgres.sh.j2
     dest: /etc/profile.d/postgres.sh
     mode: 0644
-  notify: restart postgresql
 
 - name: Check if Postgresql directory exists
   file:

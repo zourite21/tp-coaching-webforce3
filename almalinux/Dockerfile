@@ -16,7 +16,7 @@ ONBUILD RUN mkdir /root/.ssh; cat /tmp/authorized_keys > /root/.ssh/authorized_k
 
 RUN dnf -y update && \
     dnf -y install epel-release && \
-    dnf -y install supervisor openssh-server openssh-clients htop passwd && \
+    dnf -y install supervisor openssh-server openssh-clients htop passwd sudo && \
     dnf install -y https://yum.puppet.com/puppet7-release-el-8.noarch.rpm && \
     dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && \
     dnf install -y puppet-agent
