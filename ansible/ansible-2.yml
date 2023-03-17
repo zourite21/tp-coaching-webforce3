@@ -1,7 +1,7 @@
 ---
 - name: format disk
   become: true
-  hosts: all
+  hosts: almal
 
   tasks:
     - name: Collect only facts about hardware
@@ -19,10 +19,4 @@
       with_items:
         - "{{ hostvars[inventory_hostname].ansible_devices.keys() | list }}"
       ignore_errors: yes
-    - name: format_disk
-      filesystem:
-        fstype: ext4
-        dev: "/dev/{{ item }}"
-      with_items:
-        - "{{ hostvars[inventory_hostname].ansible_devices.keys() | list }}"
-      ignore_errors: yes
+

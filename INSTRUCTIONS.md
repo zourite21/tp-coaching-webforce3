@@ -85,7 +85,9 @@ Vérifier l'application Web sur ces ports
 
 ---
 
-## Ansible 1  Installation avec virtualenv 
+# TP Ansible 
+
+## Installation avec virtualenv 
 Mettre en place ansible dans votre VM. 
 Nous allons créer un virtualenv python pour installer la derniere version 
 d'Ansible
@@ -107,7 +109,7 @@ Créer un fichier ansible-1.yaml qui automatise l'exercice 2 ci-dessus.
 2. Vérifier la version de python3  
 3. Créer un alias dans ~/.bashrc  
 4. installer le package pip
-Testez votre script
+Testez votre script, il doit etre idempotent 
 
 ## TP ansible 2 
 Dans une sous directory de votre projet tp-coaching-webforce3 nommée **ansible**   
@@ -116,7 +118,7 @@ Trouvez le fichier ansible-2-filtre.yml qui affiche les devices en mode raw
 1. Analysez le fichier ansible-2-filtre.yml
 2. Dans la directory filter_plugins etudier le code de la fonction get_device
 3. Regardez egalement le fichier ansible.cfg, mettre des commentaires dans le README.md
-Ce filtre doit etre utilise en local, pas sur une machine remote
+Ce filtre doit etre utilise sur docker-x 
 
 Une maniere qui cette fois fonctionne en remote est le script ansible-2.yml  
 4. Analysez le fichier ansible-2.yml  
@@ -127,43 +129,58 @@ en vous inspirant du script ansible-2.yml
 
 ## TP ansible 3 
 Dans une sous directory de votre projet tp-coaching-webforce3 nommée **ansible**   
-Créer un fichier ansible-3.yaml qui automatise l'exercice 6 ci-dessus.  
+*- Créer un fichier ansible-3.yaml qui automatise l'exercice 6 ci-dessus.  
 1. activer le firewall d'ubuntu
 2. fermer le port 5000
 3. ouvrir le port 30101  
 Testez votre script
 
-## TP ansible 4 
-Copiez votre cle ssh sur la machine remote.      
-Creer votre fichier inventory pour acceder depuis ansible vers cette machine. 
-Nommez un groupe leader qui contient cette machine. comme par exemple
+## TP ansible 4  inclus maintenant un container almalinux
+### Mise en place du container almalinux
+Allez dans la directory almalinux et suivre les instructions du fichier README.md
+creez le container portainer 
 ```shell
-[leader]
-centos01 ...
+docker run -d --name portainer -p 30001:9000 -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer -H unix:///var/run/docker.sock
+# il faut se logger rapidement autrement vous aurez un timeout
 ```
-Faire la commande ansible Ad-hoc pour verifier la connectivite.      
+Dans votre navigateur, ouvrir portainer et dans la console du container alma entrer un password pour le user root
+dans portainer notez l'adresse ip du container alma
+Dans votre machine docker-x , faire 
+```shell
+ssh root@adresse_ip_du_container
+```
+entrez le mot de passe
+*- Creez une cle ssh sur la vm docker-x
+*- Copiez votre cle ssh dans le container avec ssh-copy-id        
+*- Creer votre fichier inventory pour acceder depuis ansible vers ce container. 
+Le fichier inventory contient le groupe alma qui contient un container comme ci-dessous
+```shell
+[alma]
+alma01 ansible_host=172.xx.x.x ansible_ssh_user=root ansible_ssh_private_key=/home/<surname>/.ssh/id_rsa
+```
+*- Faire la commande ansible Ad-hoc pour verifier la connectivite.      
 Dans votre home directory creez une directory webforce.   
-Dans cette directory , creer un role postgresql.role   
-Dans la directory webforce , creer un playbook postgres.yml qui utilise le role  
-faire les commandes ansible Ad-hoc pour verifier OS et la version de centos01  
+*- Dans cette directory , creer un role postgresql.role   
+*- Dans la directory webforce , creer un playbook postgres.yml qui utilise le role  
+*- faire les commandes ansible Ad-hoc pour verifier l'OS et la version almalinux  
 Dans role postgresql.role  et dans la directory tasks  
 Creez un fichier nommee variables.yml , Copiez le code suivant:  
 ```yaml
 ---
 # Variables configuration
-- name: Include OS-specific variables (Centos)
+- name: Include OS-specific variables (Alma)
   include_vars: "{{ ansible_distribution }}-{{ ansible_distribution_version.split('.')[0] }}.yml"
-  when: ansible_distribution == "CentOS"
+  when: ansible_distribution == "AlmaLinux"
 ```
 Etudiez ce code, et commentez le dans votre README.md
-Editez le fichier main.yml dans la directory tasks
+Editez le fichier main.yml dans la directory tasks du role postgresql.role
 Copiez le code suivant:
 ```yaml
 - include_tasks: variables.yml
 
 # Setup /install task
-- include_tasks: setup-CentOS.yml
-  when: ansible_distribution == 'CentOS'
+- include_tasks: setup-AlmaLinux.yml
+  when: ansible_distribution == 'Almalinux'
 
 - include_tasks: initialize.yml
 
@@ -175,7 +192,7 @@ Copiez le code suivant:
 
 - import_tasks: users.yml
 ```
-dans la directory tasks copiez le code dans setup-CentOS.yml 
+dans la directory tasks copiez le code suivant dans setup-AlmaLinux.yml 
 ```yaml
 ---
 - name: Check if the postgresql packages are installed
@@ -183,10 +200,6 @@ dans la directory tasks copiez le code dans setup-CentOS.yml
     name: "{{ postgresql_packages }}"
     state: present
 
-- name: Check if the postgresql librairies are installed
-  yum:
-    name: "{{ postgresql_python_library }}"
-    state: present
 ```
 dans la directory tasks copiez le code dans initialize.yml
 ```yaml
@@ -242,10 +255,10 @@ dans la directory tasks copiez le code dans users.yml
   become_user: "{{ postgresql_user}}"
 ```
 
-Le fichier qui mixte le nom de l'OS et la version est CentOS-7.yml
+Le fichier qui mixte le nom de l'OS et la version est Almalinux-8.yml
 ```yaml
 ---
-postgresql_version: "9.2"
+postgresql_version: "10"
 postgresql_data_dir: "/var/lib/pgsql/data"
 postgresql_bin_path: "/usr/bin"
 postgresql_config_path: "/var/lib/pgsql/data"
@@ -254,10 +267,6 @@ postgresql_packages:
   - postgresql
   - postgresql-server
   - postgresql-contrib
-  - postgresql-libs
-postgresql_python_library:
-  - postgresql-plpython
-  - python-psycopg2
 ```
 dans le fichier main.yml postgresql.role/handlers
 ```yaml
@@ -267,7 +276,7 @@ dans le fichier main.yml postgresql.role/handlers
     state: "{{ postgresql_restarted_state }}"
     sleep: 5
 ```
-Pourquoi vous avez besoin d'un handler?   
+Pourquoi avez vous besoin d'un handler?   
 
 dans le fichier main.yml postgresql.role/defaults
 ```yaml
